@@ -2,9 +2,13 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Appointment;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @property-read Appointment $resource
+ */
 class AppointmentResource extends JsonResource
 {
     /**
@@ -14,24 +18,27 @@ class AppointmentResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $service = $this->resource->service;
+        $healthProfessional = $this->resource->healthProfessional;
+
         return [
-            'id' => $this->id,
+            'id' => $this->resource->id,
             'service' => [
-                'id' => $this->service->id,
-                'name' => $this->service->name,
-                'duration_minutes' => $this->service->duration_minutes,
-                'price' => $this->service->price,
+                'id' => $service->id,
+                'name' => $service->name,
+                'duration_minutes' => $service->duration_minutes,
+                'price' => $service->price,
             ],
             'health_professional' => [
-                'id' => $this->healthProfessional->id,
-                'name' => $this->healthProfessional->name,
-                'specialization' => $this->healthProfessional->specialization,
+                'id' => $healthProfessional->id,
+                'name' => $healthProfessional->name,
+                'specialization' => $healthProfessional->specialization,
             ],
-            'customer_email' => $this->customer_email,
-            'scheduled_at' => $this->scheduled_at->toIso8601String(),
-            'status' => $this->status,
-            'notes' => $this->notes,
-            'created_at' => $this->created_at->toIso8601String(),
+            'customer_email' => $this->resource->customer_email,
+            'scheduled_at' => $this->resource->scheduled_at->toIso8601String(),
+            'status' => $this->resource->status,
+            'notes' => $this->resource->notes,
+            'created_at' => $this->resource->created_at->toIso8601String(),
         ];
     }
 }

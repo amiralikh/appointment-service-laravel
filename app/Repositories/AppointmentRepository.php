@@ -13,6 +13,9 @@ class AppointmentRepository implements AppointmentRepositoryInterface
         protected Appointment $model
     ) {}
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function create(array $data): Appointment
     {
         return $this->model->create($data);
@@ -25,6 +28,9 @@ class AppointmentRepository implements AppointmentRepositoryInterface
             ->find($id);
     }
 
+    /**
+     * @return Collection<int, Appointment>
+     */
     public function getByCustomerEmail(string $email): Collection
     {
         return $this->model
@@ -51,9 +57,12 @@ class AppointmentRepository implements AppointmentRepositoryInterface
             ->exists();
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function update(int $id, array $data): bool
     {
-        return $this->model->where('id', $id)->update($data);
+        return (bool) $this->model->where('id', $id)->update($data);
     }
 
     public function delete(int $id): bool

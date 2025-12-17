@@ -35,11 +35,14 @@ class AppointmentConfirmationMail extends Mailable
      */
     public function content(): Content
     {
+        $service = $this->appointment->service;
+        $healthProfessional = $this->appointment->healthProfessional;
+
         return new Content(
             view: 'emails.appointment-confirmation',
             with: [
-                'serviceName' => $this->appointment->service->name,
-                'professionalName' => $this->appointment->healthProfessional->name,
+                'serviceName' => $service->name,
+                'professionalName' => $healthProfessional->name,
                 'scheduledAt' => $this->appointment->scheduled_at->format('l, F j, Y \a\t g:i A'),
                 'customerEmail' => $this->appointment->customer_email,
             ],

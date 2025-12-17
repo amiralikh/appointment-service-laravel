@@ -2,12 +2,17 @@
 
 namespace App\Models;
 
+use Database\Factories\AppointmentFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @use HasFactory<AppointmentFactory>
+ */
 class Appointment extends Model
 {
+    /** @use HasFactory<AppointmentFactory> */
     use HasFactory;
 
     protected $fillable = [
@@ -24,11 +29,17 @@ class Appointment extends Model
         'status' => 'string',
     ];
 
+    /**
+     * @return BelongsTo<Service, $this>
+     */
     public function service(): BelongsTo
     {
         return $this->belongsTo(Service::class);
     }
 
+    /**
+     * @return BelongsTo<HealthProfessional, $this>
+     */
     public function healthProfessional(): BelongsTo
     {
         return $this->belongsTo(HealthProfessional::class);

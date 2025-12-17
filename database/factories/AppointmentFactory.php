@@ -7,10 +7,16 @@ use App\Models\HealthProfessional;
 use App\Models\Service;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<Appointment>
+ */
 class AppointmentFactory extends Factory
 {
     protected $model = Appointment::class;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         return [

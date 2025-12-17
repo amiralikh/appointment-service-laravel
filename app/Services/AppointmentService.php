@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Jobs\SendAppointmentConfirmation;
 use App\Models\Appointment;
 use App\Repositories\Contracts\AppointmentRepositoryInterface;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,9 @@ class AppointmentService
         protected AppointmentRepositoryInterface $appointmentRepository
     ) {}
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function createAppointment(array $data): Appointment
     {
         return DB::transaction(function () use ($data) {
@@ -58,6 +62,8 @@ class AppointmentService
 
     /**
      * Get customer appointments.
+     *
+     * @return array<int, mixed>
      */
     public function getCustomerAppointments(string $email): array
     {

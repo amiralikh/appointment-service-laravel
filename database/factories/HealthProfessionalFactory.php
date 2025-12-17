@@ -5,6 +5,9 @@ namespace Database\Factories;
 use App\Models\HealthProfessional;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends Factory<HealthProfessional>
+ */
 class HealthProfessionalFactory extends Factory
 {
     protected $model = HealthProfessional::class;
