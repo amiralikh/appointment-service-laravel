@@ -4,7 +4,7 @@ use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\HealthProfessionalController;
 use Illuminate\Support\Facades\Route;
 
-Route::group(['prefix' => 'v1'], function () {
+Route::group(['prefix' => 'v1'], static function () {
     Route::prefix('appointments')->group(function () {
         Route::post('/', [AppointmentController::class, 'store'])->name('appointments.store');
         Route::get('/{id}', [AppointmentController::class, 'show'])->name('appointments.show');
