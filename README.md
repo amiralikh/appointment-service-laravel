@@ -1,59 +1,401 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Appointment Manager API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A robust RESTful API for managing healthcare appointments, built with Laravel 12. This system allows clients to book appointments with health professionals, manage services, and receive automated email confirmations.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Service Management**: Browse and retrieve healthcare services with pricing and duration
+- **Health Professional Directory**: Access information about available healthcare professionals and their specializations
+- **Appointment Booking**: Schedule appointments with automatic email confirmations
+- **Queue-Based Email Notifications**: Asynchronous email delivery for appointment confirmations
+- **Comprehensive Testing**: Full test coverage with Pest PHP testing framework
+- **Static Analysis**: Code quality ensured with PHPStan (Level 6)
+- **Repository Pattern**: Clean architecture with repository and service layers
+- **API Resources**: Consistent JSON responses with Laravel API Resources
+- **RESTful Design**: Well-structured API endpoints following REST principles
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tech Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Framework**: Laravel 12
+- **PHP**: 8.2+
+- **Database**: SQLite (default), supports MySQL/PostgreSQL
+- **Queue**: Database-driven queue system
+- **Testing**: Pest PHP
+- **Static Analysis**: PHPStan
+- **Code Style**: Laravel Pint
 
-## Learning Laravel
+## Requirements
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- PHP 8.2 or higher
+- Composer
+- SQLite extension (or MySQL/PostgreSQL)
+- Node.js & NPM (for asset compilation)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Installation
 
-## Laravel Sponsors
+### Backend Setup
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd appointment-manager
+```
 
-### Premium Partners
+2. Install PHP dependencies:
+```bash
+composer install
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+3. Copy environment file and configure:
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+4. Create database and run migrations:
+```bash
+touch database/database.sqlite
+php artisan migrate
+```
+
+5. (Optional) Seed database with realistic data:
+```bash
+php artisan seed:realistic-data
+```
+
+6. Install frontend dependencies and build assets:
+```bash
+npm install
+npm run build
+```
+
+7. Start the development server:
+```bash
+php artisan serve
+```
+
+8. Start the queue worker (for email notifications):
+```bash
+php artisan queue:work
+```
+
+### Frontend Setup
+
+The API is designed to work with a Nuxt.js frontend application.
+
+1. Clone the frontend repository:
+```bash
+git clone https://github.com/amiralikh/nuxt-appointment-form
+cd nuxt-appointment-form
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Configure the API endpoint in your `.env` file:
+```bash
+NUXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+```
+
+4. Start the development server:
+```bash
+npm run dev
+```
+
+The frontend will be available at `http://localhost:3000`
+
+### Quick Start (All-in-One)
+
+For convenience, you can use the composer scripts:
+
+```bash
+# Complete setup
+composer setup
+
+# Development mode (runs server, queue, logs, and vite)
+composer dev
+
+# Run tests
+composer test
+```
+
+## API Documentation
+
+### Base URL
+
+```
+http://localhost:8000/api/v1
+```
+
+### Endpoints
+
+#### Services
+
+- `GET /services` - List all services
+- `GET /services/{id}` - Get service details
+
+#### Health Professionals
+
+- `GET /health-professionals` - List all health professionals
+- `GET /health-professionals/{id}` - Get health professional details
+
+#### Appointments
+
+- `POST /appointments` - Create new appointment
+- `GET /appointments/{id}` - Get appointment details
+
+### Example Request
+
+**Create Appointment**
+
+```http
+POST /api/v1/appointments
+Content-Type: application/json
+
+{
+  "service_id": 1,
+  "health_professional_id": 1,
+  "customer_email": "customer@example.com",
+  "scheduled_at": "2025-12-20 14:00:00",
+  "notes": "First time visit"
+}
+```
+
+**Response**
+
+```json
+{
+  "data": {
+    "id": 1,
+    "service": {
+      "id": 1,
+      "name": "General Consultation",
+      "description": "Standard medical consultation",
+      "duration_minutes": 30,
+      "price": "50.00"
+    },
+    "health_professional": {
+      "id": 1,
+      "name": "Dr. John Smith",
+      "specialization": "General Practice",
+      "email": "dr.smith@example.com",
+      "phone": "+1234567890"
+    },
+    "customer_email": "customer@example.com",
+    "scheduled_at": "2025-12-20T14:00:00.000000Z",
+    "status": "pending",
+    "notes": "First time visit",
+    "created_at": "2025-12-18T10:30:00.000000Z"
+  }
+}
+```
+
+### Postman Collection
+
+A complete Postman collection is included in the repository:
+- `Appointment-Manager-API.postman_collection.json`
+
+Import this file into Postman for easy API testing.
+
+## Project Structure
+
+```
+app/
+├── Console/Commands/      # Artisan commands
+│   └── SeedRealisticData.php
+├── Http/
+│   ├── Controllers/Api/   # API Controllers
+│   │   ├── AppointmentController.php
+│   │   ├── HealthProfessionalController.php
+│   │   └── ServiceController.php
+│   ├── Requests/          # Form request validation
+│   │   └── StoreAppointmentRequest.php
+│   └── Resources/         # API Resources for JSON responses
+│       ├── AppointmentResource.php
+│       ├── HealthProfessionalResource.php
+│       └── ServiceResource.php
+├── Jobs/                  # Queue jobs
+│   └── SendAppointmentConfirmation.php
+├── Mail/                  # Mailable classes
+│   └── AppointmentConfirmationMail.php
+├── Models/                # Eloquent models
+│   ├── Appointment.php
+│   ├── HealthProfessional.php
+│   └── Service.php
+├── Repositories/          # Repository pattern implementation
+│   ├── Contracts/
+│   │   └── AppointmentRepositoryInterface.php
+│   └── AppointmentRepository.php
+└── Services/              # Business logic layer
+    └── AppointmentService.php
+```
+
+## Architecture
+
+This application follows clean architecture principles:
+
+1. **Controllers**: Handle HTTP requests and responses
+2. **Requests**: Validate incoming data
+3. **Services**: Contain business logic
+4. **Repositories**: Handle data persistence (abstraction layer for database operations)
+5. **Resources**: Transform models into JSON responses
+6. **Jobs**: Handle asynchronous tasks
+7. **Mail**: Email template management
+
+## Testing
+
+The project includes comprehensive test coverage:
+
+```bash
+# Run all tests
+php artisan test
+
+# Run with coverage
+php artisan test --coverage
+
+# Run specific test suite
+php artisan test --testsuite=Feature
+php artisan test --testsuite=Unit
+```
+
+### Test Structure
+
+- **Feature Tests**: API endpoint integration tests
+  - `AppointmentControllerTest.php`
+  - `HealthProfessionalControllerTest.php`
+  - `ServiceControllerTest.php`
+
+- **Unit Tests**: Business logic and component tests
+  - `AppointmentServiceTest.php`
+  - `AppointmentRepositoryTest.php`
+  - `SendAppointmentConfirmationTest.php`
+
+## Code Quality
+
+### Static Analysis
+
+Run PHPStan for static analysis:
+
+```bash
+vendor/bin/phpstan analyse
+```
+
+Configuration: `phpstan.neon`
+
+### Code Formatting
+
+Format code with Laravel Pint:
+
+```bash
+vendor/bin/pint
+```
+
+## Configuration
+
+### Database
+
+The application uses SQLite by default. To use MySQL or PostgreSQL:
+
+1. Update `.env`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=appointment_manager
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
+
+2. Run migrations:
+```bash
+php artisan migrate
+```
+
+### Email
+
+Configure email settings in `.env`:
+
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=your_username
+MAIL_PASSWORD=your_password
+MAIL_FROM_ADDRESS="noreply@appointmentmanager.com"
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+For development, emails are logged by default (`MAIL_MAILER=log`).
+
+### Queue
+
+The application uses database queues by default. For production, consider Redis:
+
+```env
+QUEUE_CONNECTION=redis
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+```
+
+Don't forget to run the queue worker:
+
+```bash
+php artisan queue:work
+```
+
+## Development Commands
+
+### Custom Commands
+
+- `php artisan seed:realistic-data` - Generate realistic test data for development
+
+### Useful Laravel Commands
+
+- `php artisan route:list` - List all registered routes
+- `php artisan migrate:fresh --seed` - Fresh migration with seeding
+- `php artisan queue:work` - Process queue jobs
+- `php artisan pail` - View application logs in real-time
+
+## Production Deployment
+
+1. Set environment to production:
+```env
+APP_ENV=production
+APP_DEBUG=false
+```
+
+2. Optimize application:
+```bash
+composer install --optimize-autoloader --no-dev
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+3. Set up queue worker as a system service
+4. Configure proper database (MySQL/PostgreSQL)
+5. Set up email service (e.g., AWS SES, Mailgun)
+6. Enable HTTPS
+7. Set up proper backup strategy
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Run tests (`php artisan test`)
+5. Run static analysis (`vendor/bin/phpstan analyse`)
+6. Format code (`vendor/bin/pint`)
+7. Push to the branch (`git push origin feature/amazing-feature`)
+8. Open a Pull Request
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is licensed under the MIT License.
+
+## Support
+
+For issues, questions, or contributions, please open an issue in the repository.
